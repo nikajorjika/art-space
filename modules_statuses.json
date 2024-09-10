@@ -1,0 +1,13 @@
+{
+    "User": true,
+    "Product": true,
+    "Cart": true,
+    "Order": true,
+    "Payment": true,
+    "Shipping": true,
+    "Discount": true,
+    "Wishlist": true,
+    "Review": true,
+    "Inventory": true,
+    "Notification": true
+}
