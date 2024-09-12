@@ -6,55 +6,26 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Modules\User\Http\Requests\UpdateUserRequest;
+use Modules\User\Models\User;
 
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return view('user::index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('user::create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        //
-    }
-
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('user::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('user::edit');
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(UpdateUserRequest $request, $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        if (Auth::id() !== $user->id) {
+            return response()->json(['message' => trans('Unauthenticated.')], 401);
+        }
+
+        $user->update($request->validated());
+
+        return response()->json($user, 200);
     }
 
     /**
@@ -62,6 +33,14 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        if (Auth::id() !== $user->id) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $user->delete();
+
+        return response()->json(null, 204);
     }
 }

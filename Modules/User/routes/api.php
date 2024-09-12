@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\User\Http\Controllers\LoginController;
+use Modules\User\Http\Controllers\MeController;
+use Modules\User\Http\Controllers\RegistrationController;
 use Modules\User\Http\Controllers\UserController;
 
 /*
@@ -14,6 +17,12 @@ use Modules\User\Http\Controllers\UserController;
  *
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
+Route::middleware(['auth:sanctum', 'api'])->prefix('v1')->group(function () {
+    Route::get('/user/me', MeController::class)->name('user.me');
     Route::apiResource('user', UserController::class)->names('user');
+});
+
+Route::middleware(['api'])->prefix('v1')->group(function () {
+    Route::post('/user/register', RegistrationController::class)->name('user.register');
+    Route::post('/user/login', LoginController::class)->name('user.login');
 });
