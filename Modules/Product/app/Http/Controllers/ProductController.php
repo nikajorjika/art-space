@@ -3,34 +3,54 @@
 namespace Modules\Product\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Modules\Product\Http\Requests\CreateProductRequest;
+use Modules\Product\Http\Requests\UpdateProductRequest;
+use Modules\Product\Models\Product;
+use Modules\User\Models\User;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('product::index');
-    }
+        $pagination = $request->get('pagination', 10);
+        $products = Product::paginate($pagination);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('product::create');
+        return response()->json($products, 200);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CreateProductRequest $request): JsonResponse
     {
-        //
+        $generatedSKU = Str::uuid();
+        $categories = $request->get('categories');
+        $quantity = $request->get('quantity');;
+        $productFields = array_merge(
+            $request->only([
+                'slug',
+                'name',
+                'description',
+                'price',
+                'discount',
+                'stock_quantity',
+                'brand_id',
+            ]),
+            ['sku' => $generatedSKU]
+        );
+        $product = $request->user()->products()->create($productFields);
+        $product->categories()->attach($categories);
+
+        // TODO: Need to add the quantity to the stock
+        return response()->json($product, 201);
     }
 
     /**
@@ -38,30 +58,44 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        return view('product::show');
-    }
+        $product = Product::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('product::edit');
+        return response()->json($product);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(UpdateProductRequest $request, $id): RedirectResponse
     {
-        //
+        $product = Product::findOrFail($id);
+        $productFields = $request->only([
+            'name',
+            'description',
+            'price',
+            'discount',
+            'stock_quantity',
+            'brand_id',
+        ]);
+        $categories = $request->get('categories');
+
+        $product->update($productFields);
+
+        if ($categories) {
+            $product->categories()->sync($categories);
+        }
+
+        return response()->json($product, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
-        //
+        $product = Product::findOrFail($id);
+        $product->delete();
+
+        return response()->json(['message' => 'Product deleted successfully.'], 200);
     }
 }

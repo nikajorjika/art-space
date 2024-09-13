@@ -12,9 +12,8 @@ describe('User CRUD me/Update/Destroy', function () {
     /** @test */
     it('can retrieve authenticated user', function () {
         $user = User::factory()->create();
-        Auth::loginUsingId($user->id);
 
-        $response = $this->getJson(route('api.user.me'));
+        $response = $this->actingAs($user)->getJson(route('api.user.me'));
 
         $response->assertStatus(200)
             ->assertJson([
@@ -29,9 +28,8 @@ describe('User CRUD me/Update/Destroy', function () {
     /** @test */
     it('updates a user successfully', function () {
         $user = User::factory()->create();
-        Auth::loginUsingId($user->id);
 
-        $response = $this->putJson(route('api.user.update', $user->id), [
+        $response = $this->actingAs($user)->putJson(route('api.user.update', $user->id), [
             'name' => 'Updated Name',
             'email' => 'updated@example.com',
         ]);
@@ -53,7 +51,8 @@ describe('User CRUD me/Update/Destroy', function () {
         $user = User::factory()->create();
 
         $response = $this->putJson(route('api.user.update', $user->id), [
-            'name' => 'Updated Name',]);
+            'name' => 'Updated Name',
+        ]);
         $response->assertStatus(401)
             ->assertJson([
                 'message' => 'Unauthenticated.',
@@ -63,9 +62,8 @@ describe('User CRUD me/Update/Destroy', function () {
     /** @test */
     it('fails to update a user with invalid data', function () {
         $user = User::factory()->create();
-        Auth::loginUsingId($user->id);
 
-        $response = $this->putJson(route('api.user.update', $user->id), [
+        $response = $this->actingAs($user)->putJson(route('api.user.update', $user->id), [
             'name' => '', // Invalid data
             'email' => 'invalid-email', // Invalid email
         ]);
@@ -75,25 +73,38 @@ describe('User CRUD me/Update/Destroy', function () {
     });
 
     /** @test */
-    it('deletes a user successfully', function () {
+    it('returns 404 not found in case non-existing user', function () {
         $user = User::factory()->create();
-        Auth::loginUsingId($user->id);
 
-        $response = $this->deleteJson(route('api.user.destroy', $user->id));
+        $response = $this->actingAs($user)->deleteJson(route('api.user.destroy', 999));
+
+        $response->assertStatus(404);
+    });
+
+    /** @test */
+    it('deletes a user using soft delete successfully', function () {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->deleteJson(route('api.user.destroy', $user->id));
 
         $response->assertStatus(204);
 
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+        ]);
+
         $this->assertDatabaseMissing('users', [
             'id' => $user->id,
+            'deleted_at' => null,
         ]);
     });
 
     /** @test */
     it('fails to delete a another user when authenticated', function () {
-        $user = User::factory()->create();
-        Auth::loginUsingId($user->id);
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
 
-        $response = $this->deleteJson(route('api.user.destroy',999));
+        $response = $this->actingAs($user1)->deleteJson(route('api.user.destroy', $user2->id));
 
         $response->assertStatus(401)
             ->assertJson([
