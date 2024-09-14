@@ -3,7 +3,10 @@
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
+use Modules\User\Http\Controllers\RegistrationController;
 use Modules\User\Models\User;
+
+covers(RegistrationController::class);
 
 uses(Tests\TestCase::class);
 uses(RefreshDatabase::class);

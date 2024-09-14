@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Modules\Product\Models\Product;
+use Modules\User\Database\Factories\UserFactory;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -36,6 +37,13 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
     ];
+
+
+
+    protected static function newFactory(): UserFactory
+    {
+        return UserFactory::new();
+    }
 
     /**
      * Get the attributes that should be cast.

@@ -3,9 +3,6 @@
 namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Modules\User\Http\Requests\UpdateUserRequest;
 use Modules\User\Models\User;

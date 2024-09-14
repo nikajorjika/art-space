@@ -18,6 +18,7 @@ class BrandFactory extends Factory
     {
         return [
             'name' => ['en' => $this->faker->name, 'ka' => $this->faker->name],
+            'slug' => ['en' => $this->faker->name, 'ka' => $this->faker->name],
             'description' => ['en' => $this->faker->sentence, 'ka' => $this->faker->sentence],
         ];
     }

@@ -11,12 +11,13 @@ class Brand extends Model
 {
     use HasFactory, HasTranslations;
 
-    public array $translatable = ['name', 'description'];
+    public array $translatable = ['name', 'slug', 'description'];
 
     /**
      * The attributes that are mass assignable.
      */
     protected $fillable = [
+        'slug',
         'name',
         'description',
     ];

@@ -1,10 +1,13 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Product\Http\Controllers\ProductController;
 use Modules\Product\Models\Brand;
 use Modules\Product\Models\Category;
 use Modules\Product\Models\Product;
 use Modules\User\Models\User;
+
+covers(ProductController::class);
 
 uses(Tests\TestCase::class);
 uses(RefreshDatabase::class);

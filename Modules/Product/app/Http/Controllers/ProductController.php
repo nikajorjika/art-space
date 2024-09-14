@@ -4,14 +4,11 @@ namespace Modules\Product\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Modules\Product\Http\Requests\CreateProductRequest;
 use Modules\Product\Http\Requests\UpdateProductRequest;
 use Modules\Product\Models\Product;
-use Modules\User\Models\User;
 
 class ProductController extends Controller
 {
@@ -66,7 +63,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, $id): RedirectResponse
+    public function update(UpdateProductRequest $request, $id): JsonResponse
     {
         $product = Product::findOrFail($id);
         $productFields = $request->only([

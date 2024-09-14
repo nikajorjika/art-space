@@ -1,7 +1,10 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\User\Http\Controllers\LoginController;
 use Modules\User\Models\User;
+
+covers(LoginController::class);
 
 uses(Tests\TestCase::class);
 uses(RefreshDatabase::class);

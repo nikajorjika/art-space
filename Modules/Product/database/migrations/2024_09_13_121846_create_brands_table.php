@@ -12,9 +12,9 @@ return new class extends Migration {
     {
         Schema::create('brands', function (Blueprint $table) {
             $table->id();
+            $table->json('slug');
             $table->json('name');
             $table->json('description')->nullable();
-            $table->json('slug');
             $table->timestamps();
         });
     }
