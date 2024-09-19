@@ -160,7 +160,7 @@ import {
 } from '@/components/ui/accordion'
 import {Checkbox} from '@/components/ui/checkbox'
 import {Slider} from '@/components/ui/slider'
-import Layout from '@/Layouts/Default.vue'
+import Layout from '@/layouts/Default.vue'
 
 const products = ref([
     {id: 1, name: 'Classic White T-Shirt', price: 29.99, rating: 4.5, image: '/placeholder.svg?height=300&width=300'},

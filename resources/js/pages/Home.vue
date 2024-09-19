@@ -110,11 +110,10 @@
 
 <script setup>
 import {ChevronRight} from 'lucide-vue-next'
-import Layout from '@/Layouts/Default.vue'
+import Layout from '@/layouts/Default.vue'
 import Button from '@/components/ui/button/Button.vue'
-import Navigation from "@/Core/Navigation.vue";
 import SearchSection from "@/components/Search/SearchSection.vue";
-import Footer from "@/Core/Footer.vue";
+import Footer from "@/core/Footer.vue";
 
 const categories = [
     {title: 'Shop Latest Fashion Trends', image: 'https://placehold.co/300x400'},

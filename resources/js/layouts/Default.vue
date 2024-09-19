@@ -6,6 +6,6 @@
 </template>
 
 <script setup>
-import Navigation from "@/Core/Navigation.vue";
+import Navigation from "@/core/Navigation.vue";
 </script>
 
